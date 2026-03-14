@@ -7,9 +7,8 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
-  const [activeTab, setActiveTab] = useState('search'); // 'search' or 'upload'
+  const [activeTab, setActiveTab] = useState('search');
 
-  // Prompt categories
   const promptCategories = {
     vibes: ['minimal', 'cozy', 'bold', 'moody', 'bright', 'warm', 'elegant', 'rustic'],
     spaces: ['kitchen', 'living room', 'backyard', 'office', 'bedroom', 'bathroom', 'exterior', 'patio'],
@@ -63,28 +62,33 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
     onChange(images.filter(img => img.id !== imageId));
   };
 
-  const handleFileUpload = (e) => {
-  const files = Array.from(e.target.files);
-  const remainingSlots = maxImages - images.length;
-  
-  files.slice(0, remainingSlots).forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const newImage = {
-        id: `upload-${Date.now()}-${Math.random()}`,
-        url: event.target.result,
-        thumbnail: event.target.result,
-        source: 'upload',
-      };
-      onChange(prev => [...prev, newImage]);
-    };
-    reader.readAsDataURL(file);
-  });
-};
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    const remainingSlots = maxImages - images.length;
+    const filesToProcess = files.slice(0, remainingSlots);
+    
+    const newImages = await Promise.all(
+      filesToProcess.map((file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            resolve({
+              id: `upload-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              url: event.target.result,
+              thumbnail: event.target.result,
+              source: 'upload',
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      })
+    );
+    
+    onChange([...images, ...newImages]);
+  };
 
   return (
     <div className="space-y-4">
-      {/* Selected Images */}
       {images.length > 0 && (
         <div>
           <p className="text-gray-600 text-sm mb-2">
@@ -110,7 +114,6 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
         </div>
       )}
 
-      {/* Tabs */}
       <div className="flex gap-2 border-b border-gray-200">
         <button
           onClick={() => setActiveTab('search')}
@@ -158,7 +161,6 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
 
       {activeTab === 'search' && (
         <>
-          {/* Topic-based suggestions */}
           {topicSuggestions.length > 0 && (
             <div>
               <p className="text-gray-600 text-sm mb-2">Based on your topic:</p>
@@ -176,7 +178,6 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
             </div>
           )}
 
-          {/* Prompt categories */}
           <div className="space-y-3">
             <p className="text-gray-600 text-sm">Or build your search:</p>
             
@@ -202,7 +203,6 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
             ))}
           </div>
 
-          {/* Selected tags display */}
           {selectedTags.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 p-3 bg-gray-50 rounded-xl">
               <span className="text-gray-500 text-sm">Selected:</span>
@@ -229,7 +229,6 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
             </div>
           )}
 
-          {/* Search box */}
           <div className="flex gap-2">
             <input
               type="text"
@@ -248,7 +247,6 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
             </button>
           </div>
 
-          {/* Search Results */}
           {searchResults.length > 0 && (
             <div>
               <p className="text-gray-600 text-sm mb-2">Results:</p>

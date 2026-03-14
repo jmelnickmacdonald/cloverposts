@@ -76,7 +76,7 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
           thumbnail: event.target.result,
           source: 'upload',
         };
-        onChange(prev => [...prev, newImage]);
+        onChange([...images, newImage]);
       };
       reader.readAsDataURL(file);
     });

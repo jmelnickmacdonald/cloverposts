@@ -64,23 +64,23 @@ export default function ImagePicker({ images, onChange, maxImages, topicSuggesti
   };
 
   const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const remainingSlots = maxImages - images.length;
-    
-    files.slice(0, remainingSlots).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const newImage = {
-          id: `upload-${Date.now()}-${Math.random()}`,
-          url: event.target.result,
-          thumbnail: event.target.result,
-          source: 'upload',
-        };
-        onChange([...images, newImage]);
+  const files = Array.from(e.target.files);
+  const remainingSlots = maxImages - images.length;
+  
+  files.slice(0, remainingSlots).forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const newImage = {
+        id: `upload-${Date.now()}-${Math.random()}`,
+        url: event.target.result,
+        thumbnail: event.target.result,
+        source: 'upload',
       };
-      reader.readAsDataURL(file);
-    });
-  };
+      onChange(prev => [...prev, newImage]);
+    };
+    reader.readAsDataURL(file);
+  });
+};
 
   return (
     <div className="space-y-4">

@@ -56,4 +56,10 @@ export async function POST(request) {
 
     return NextResponse.json(parsed);
   } catch (error) {
-    console.error('Generate API error:', erro
+    console.error('Generate API error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

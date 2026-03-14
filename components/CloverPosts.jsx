@@ -1,9 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ImagePicker from './ImagePicker';
 
 export default function CloverPosts() {
-  const [step, setStep] = useState('landing'); // landing, transition, topic, platform, type, images, style, voice, generating, caption, export
+  const [step, setStep] = useState('landing');
   const [formData, setFormData] = useState({
     topic: '',
     platform: 'instagram',
@@ -18,11 +18,9 @@ export default function CloverPosts() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
 
-  // Generate smart image suggestions based on topic
   const getImageSuggestions = (topic) => {
     const topicLower = topic.toLowerCase();
     
-    // Real estate keywords
     if (topicLower.includes('listing') || topicLower.includes('house') || topicLower.includes('home') || topicLower.includes('property')) {
       return ['luxury home exterior', 'modern kitchen', 'cozy living room'];
     }
@@ -35,8 +33,6 @@ export default function CloverPosts() {
     if (topicLower.includes('testimonial') || topicLower.includes('client')) {
       return ['happy couple', 'handshake', 'keys handover'];
     }
-    
-    // Lifestyle keywords
     if (topicLower.includes('morning') || topicLower.includes('routine')) {
       return ['coffee morning', 'sunrise', 'journal desk'];
     }
@@ -50,7 +46,6 @@ export default function CloverPosts() {
       return ['healthy food', 'cooking kitchen', 'fresh ingredients'];
     }
     
-    // Default suggestions
     return ['professional workspace', 'lifestyle aesthetic', 'business success'];
   };
 
@@ -65,7 +60,6 @@ export default function CloverPosts() {
     const flow = ['topic', 'platform', 'type', 'images', 'style', 'voice', 'generating'];
     const currentIndex = flow.indexOf(step);
     
-    // Skip style step if single image
     if (step === 'images' && formData.postType === 'single') {
       setStep('voice');
       return;
@@ -85,7 +79,6 @@ export default function CloverPosts() {
     const flow = ['topic', 'platform', 'type', 'images', 'style', 'voice'];
     const currentIndex = flow.indexOf(step);
     
-    // Skip style step going back if single image
     if (step === 'voice' && formData.postType === 'single') {
       setStep('images');
       return;
@@ -145,7 +138,6 @@ export default function CloverPosts() {
     setGeneratedContent(null);
   };
 
-  // Clover prompts for each step
   const cloverPrompts = {
     topic: "What's this post about?",
     platform: "Where's it going?",
@@ -158,10 +150,9 @@ export default function CloverPosts() {
     export: "Ready to post.",
   };
 
-  // Landing page
   if (step === 'landing') {
     return (
-      <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
+      <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-end p-4 md:pr-16 lg:pr-24"
            style={{ backgroundImage: 'url(/images/background.png)' }}>
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 max-w-lg w-full text-center">
           <img 
@@ -188,10 +179,9 @@ export default function CloverPosts() {
     );
   }
 
-  // Transition screen
   if (step === 'transition') {
     return (
-      <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
+      <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-end p-4 md:pr-16 lg:pr-24"
            style={{ backgroundImage: 'url(/images/background.png)' }}>
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 max-w-lg w-full text-center">
           <img 
@@ -207,12 +197,10 @@ export default function CloverPosts() {
     );
   }
 
-  // Main app flow
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-end p-4 md:pr-16 lg:pr-24"
          style={{ backgroundImage: 'url(/images/background.png)' }}>
       <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-10 max-w-2xl w-full">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <img 
             src="/images/wordmark.png" 
@@ -227,7 +215,6 @@ export default function CloverPosts() {
           </button>
         </div>
 
-        {/* Clover + Prompt */}
         <div className="flex items-start gap-4 mb-6">
           <img 
             src="/images/mascot.png" 
@@ -241,9 +228,7 @@ export default function CloverPosts() {
           </div>
         </div>
 
-        {/* Step Content */}
         <div className="mb-8">
-          {/* TOPIC STEP */}
           {step === 'topic' && (
             <div>
               <textarea
@@ -256,7 +241,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* PLATFORM STEP */}
           {step === 'platform' && (
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -297,7 +281,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* TYPE STEP */}
           {step === 'type' && (
             <div className="grid grid-cols-2 gap-4">
               <button
@@ -326,7 +309,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* IMAGES STEP */}
           {step === 'images' && (
             <ImagePicker
               images={formData.images}
@@ -336,7 +318,6 @@ export default function CloverPosts() {
             />
           )}
 
-          {/* STYLE STEP */}
           {step === 'style' && (
             <div>
               <p className="text-gray-600 mb-4">Apply a filter to make your images look cohesive:</p>
@@ -358,7 +339,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* VOICE STEP */}
           {step === 'voice' && (
             <div className="space-y-4">
               <div>
@@ -408,7 +388,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* GENERATING STEP */}
           {step === 'generating' && (
             <div className="text-center py-8">
               <div className="animate-spin w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full mx-auto mb-4"></div>
@@ -416,7 +395,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* CAPTION STEP */}
           {step === 'caption' && generatedContent && (
             <div className="space-y-4">
               <div>
@@ -452,7 +430,6 @@ export default function CloverPosts() {
             </div>
           )}
 
-          {/* ERROR */}
           {error && (
             <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-4">
               {error}
@@ -460,7 +437,6 @@ export default function CloverPosts() {
           )}
         </div>
 
-        {/* Navigation */}
         <div className="flex justify-between">
           {step !== 'topic' && step !== 'generating' && step !== 'caption' && (
             <button
